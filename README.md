@@ -88,6 +88,52 @@ INSERT INTO ventas VALUES
 
 SELECT * FROM dbo.categorias;
 
+//** MODULO CUATRO - CONSULTA UNO **//
+
+USE Ventas_Tech_DB
+
+SELECT 
+	MONTH (fecha_venta) AS mes,
+	SUM (cantidad * precio_unitario) AS Total_Facturado,
+	COUNT (*) AS Cantidad_Pedidos,
+	AVG (cantidad * precio_unitario) AS Ticket_Promedio 
+FROM ventas
+GROUP BY MONTH(Fecha_Venta)
+ORDER BY mes;
+
+//** CONSULTA DOS **//
+
+SELECT TOP 5
+	id_producto,
+	SUM(Cantidad) AS Unidades_Vendidas,
+	SUM(cantidad * precio_unitario) AS Total_Generado
+FROM ventas
+GROUP BY id_producto
+ORDER BY Total_Generado DESC;
+
+//** CONSULTA TRES **//
+
+SELECT 	Id_Cliente
+	COUNT(*) AS Cantidad_Pedidos,
+	SUM(Cantidad * Precio_unitario) AS Total_Gastado
+FROM Ventas
+GROUP BY id_cliente
+HAVING COUNT (*) >1
+ORDER BY Total_Gastado DESC;
+
+//** CONSULTA CUATRO **//
+
+WITH Totales_productos AS (
+	SELECT id_producto
+	SUM(cantidad * precio_unitario) AS Total_Facturado
+FROM ventas
+GROUP BY id_producto
+)
+SELECT id_producto,
+	   Total_Facturado,
+CASE WHEN Total_Facturado > (SELECT 
+AVG(Total_Facturado)
+FROM Totales_Productos);
 SELECT * FROM clientes;
 
 SELECT * FROM productos;
